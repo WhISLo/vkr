@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h2>Добро пожаловать в веб-приложение Автосервис</h2>
+<p>Вы можете:</p>
+<ul>
+    <li><a href="{% url 'login' %}">Войти</a></li>
+    <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
+    <li><a href="{% url 'dashboard' %}">Перейти в личный кабинет</a> (если авторизованы)</li>
+</ul>
+{% endblock %}
+
