@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container">
+    <h2>Диагностический отчёт</h2>
+    <p><strong>Дата:</strong> {{ report.created_at|date:"d.m.Y H:i" }}</p>
+    <p><strong>Описание:</strong><br>{{ report.description }}</p>
+    <p><strong>Рекомендации:</strong><br>{{ report.recommendations }}</p>
+    <p><strong>Необходимые запчасти:</strong></p>
+    <ul>
+      {% for part in report.required_parts.all %}
+        <li><a href="{% url 'part_detail' part.pk %}">{{ part.name }}</a></li>
+      {% empty %}
+        <li>Нет запчастей</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

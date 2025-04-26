@@ -1,6 +1,33 @@
-{% extends 'base.html' %}
-{% block title %}Профиль{% endblock %}
-{% block content %}
-<h2>Информация о профиле</h2>
-<!-- Здесь будет форма или таблица с информацией -->
-{% endblock %}
+<p>Вы вошли как: <strong>{{ request.user.email }}</strong></p>
+<!-- pk/templates/pk/profile.html -->
+
+<h3>Последние диагностические отчёты</h3>
+{% for diag in diagnostics %}
+    <div class="diagnostic-block">
+        <p><strong>Дата:</strong> {{ diag.created_at }}</p>
+        <p><strong>Описание:</strong> {{ diag.description }}</p>
+        <p><strong>Рекомендации:</strong> {{ diag.recommendations }}</p>
+        <p><strong>Необходимые запчасти:</strong>
+            <ul>
+                {% for part in diag.required_parts.all %}
+                    <li><a href="{% url 'part_detail' part.id %}">{{ part.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </p>
+    </div>
+{% endfor %}
+
+<h3>История заказов запчастей</h3>
+{% for order in part_order_history %}
+    <div class="part-order-block">
+        <p><strong>Запчасть:</strong> {{ order.part.name }}</p>
+        <p><strong>Количество:</strong> {{ order.quantity }}</p>
+        <p><strong>Статус:</strong> {{ order.status }}</p>
+        <p><strong>Дата заказа:</strong> {{ order.order_date }}</p>
+    </div>
+{% endfor %}
+
+<form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit">Выйти</button>
+</form>

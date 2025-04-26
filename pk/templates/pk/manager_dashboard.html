@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Добро пожаловать, Приёмщик!</h1>
+
+<h3>Диагностические отчёты:</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Описание</th>
+      <th>Рекомендации</th>
+      <th>Необходимые запчасти</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for report in reports %}
+      <tr>
+        <td>{{ report.created_at }}</td>
+        <td>{{ report.description }}</td>
+        <td>{{ report.recommendations }}</td>
+        <td>
+          <ul>
+            {% for part in report.required_parts.all %}
+              <li>{{ part.name }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>
+          <a href="{% url 'send_report' report.id %}">Отправить отчёт</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Запчасти:</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Название</th>
+      <th>Описание</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for part in parts %}
+      <tr>
+        <td>{{ part.name }}</td>
+        <td>{{ part.description }}</td>
+        <td>
+          <a href="{% url 'part_detail' part.id %}">Подробнее</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

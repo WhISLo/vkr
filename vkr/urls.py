@@ -27,4 +27,5 @@ urlpatterns = [
     path('history/', include('history.urls')),
     path('details/', include('details.urls')),
     path('external/', include('external_parts.urls')),
+
 ]

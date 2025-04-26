@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание отчёта</title>
+</head>
+<body>
+    <h1>Создание отчёта после диагностики</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Сохранить отчёт</button>
+    </form>
+
+    <p><a href="{% url 'profile' %}">← Вернуться в профиль</a></p>
+</body>
+</html>

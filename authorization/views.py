@@ -9,7 +9,7 @@ def register_view(request):
         user = form.save()
         login(request, user)
         return redirect('profile')
-    return render(request, 'authorization/register.html')  # , {'form': form}
+    return render(request, 'authorization/register.html', {'form': form})  # , {'form': form}
 
 
 def login_view(request):
@@ -18,9 +18,24 @@ def login_view(request):
         user = form.get_user()
         login(request, user)
         return redirect('profile')
-    return render(request, 'authorization/login.html')  # , {'form': form}
+    return render(request, 'authorization/login.html', {'form': form})  # , {'form': form}
 
 
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+'''
+123
+123@mail.ru
+123
+Lada
+wedfghj234576543asdfvb
+'''
+'''
+0909009
+0909009@mail.ru
+0909009
+VAZ
+wedf13457sadadasdasd43asdfvb
+'''
