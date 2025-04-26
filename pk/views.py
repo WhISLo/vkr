@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from diagnostics.models import DiagnosticReport
 from details.models import Part
+
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 
