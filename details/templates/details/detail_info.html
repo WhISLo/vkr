@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
+
 {% block title %}Информация о детали{% endblock %}
+
 {% block content %}
-<h2>Деталь</h2>
-<!-- Описание, цена, наличие -->
+<h2>Информация о детали</h2>
+<p>Здесь будет информация о выбранной запчасти.</p>
+{% if user.has_perm('details.add_part') %}
+  <a href="{% url 'add_part' %}">➕ Добавить новую запчасть</a>
+{% endif %}
+<a href="{% url 'add_part_to_order' part.id %}">➕ Добавить эту деталь в заказ</a>
 {% endblock %}

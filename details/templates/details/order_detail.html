@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
+
 {% block title %}Оформление заказа{% endblock %}
+
 {% block content %}
-<h2>Заказ на деталь</h2>
-<!-- Форма оформления -->
+<h2>Детали заказа</h2>
+
+<p>Деталь: {{ order.part.name }}</p>
+<p>Количество: {{ order.quantity }}</p>
+<p>Статус: {{ order.get_status_display }}</p>
+
+<a href="{% url 'user_orders' %}">← Назад к моим заказам</a>
 {% endblock %}

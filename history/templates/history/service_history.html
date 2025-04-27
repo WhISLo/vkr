@@ -2,5 +2,12 @@
 {% block title %}История обслуживания{% endblock %}
 {% block content %}
 <h2>История обслуживания автомобиля</h2>
-<!-- Таблица с ТО -->
+{% for order in part_orders %}
+  <div>
+    <p>Название запчасти: {{ order.part.name }}</p>
+    <p>Дата заказа: {{ order.ordered_at }}</p>
+    <a href="{% url 'order_detail' order.id %}">Перейти к заказу</a>
+  </div>
+{% endfor %}
+
 {% endblock %}

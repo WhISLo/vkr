@@ -1,28 +1,40 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Автосервис{% endblock %}</title>
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Автосервис</h1>
-        <nav>
-            <a href="/">Главная</a> |
-            <a href="/authorization/login/">Вход</a> |
-            <a href="/authorization/register/">Регистрация</a>
-        </nav>
-    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Меню</h2>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+            {% if user.is_authenticated %}
+                <p>👋 Привет, {{ user.username }}!</p>
+            {% else %}
+                <p>👋 Привет, гость!</p>
+            {% endif %}
 
-    <footer>
-        <p>&copy; {{ year }} Автосервис</p>
-    </footer>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">🏠 Главная</a></li>
+                    <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}">👤 Профиль</a></li>
+                    <li><a href="{% url 'parts_history' %}" class="{% if 'parts_history' in request.path %}active{% endif %}">📦 История запчастей</a></li>
+                    <li><a href="{% url 'service_history' %}" class="{% if 'service_history' in request.path %}active{% endif %}">🛠 История обслуживания</a></li>
+                    <li><a href="{% url 'user_orders' %}" class="{% if 'user_orders' in request.path %}active{% endif %}">🧾 Мои заказы</a></li>
+                    <li><a href="{% url 'marketplace_links' %}" class="{% if 'marketplace_links' in request.path %}active{% endif %}">🛒 Магазин запчастей</a></li>
+                    <li><a href="{% url 'add_part' %}" class="{% if 'add_part' in request.path %}active{% endif %}">➕ Добавить запчасть</a></li>
+                    <li><a href="{% url 'logout' %}">🚪 Выход</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
 </body>
 </html>
