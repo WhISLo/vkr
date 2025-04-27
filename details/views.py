@@ -30,9 +30,13 @@ def add_part_view(request):
         form = PartOrderForm()
     return render(request, 'details/add_part.html', {'form': form})
 
+
 @login_required
 def user_orders_view(request):
+    # Получаем все заказы для текущего пользователя, отсортированные по дате
     orders = PartOrderHistory.objects.filter(user=request.user).order_by('-order_date')
+
+    # Передаем заказы в шаблон
     return render(request, 'details/user_orders.html', {'orders': orders})
 
 # Добавить запчасть в заказ пользователем

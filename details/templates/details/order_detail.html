@@ -1,13 +1,37 @@
+<!-- details/templates/details/detail_card.html -->
+
 {% extends 'base.html' %}
-
-{% block title %}Оформление заказа{% endblock %}
-
 {% block content %}
-<h2>Детали заказа</h2>
 
-<p>Деталь: {{ order.part.name }}</p>
-<p>Количество: {{ order.quantity }}</p>
-<p>Статус: {{ order.get_status_display }}</p>
+<div class="detail-card">
+    <h2>{{ detail.name }}</h2>
+    <p>Цена за штуку: <span id="price-per-item">{{ detail.price }}</span> ₽</p>
 
-<a href="{% url 'user_orders' %}">← Назад к моим заказам</a>
+    <form method="post">
+        {% csrf_token %}
+        <label for="quantity">Количество:</label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1">
+
+        <p>Итоговая цена: <span id="total-price">{{ detail.price }}</span> ₽</p>
+
+        <button type="submit">Добавить в заказ</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInput = document.getElementById('quantity');
+    const pricePerItem = parseFloat(document.getElementById('price-per-item').textContent);
+    const totalPriceElem = document.getElementById('total-price');
+
+    function updateTotalPrice() {
+        const quantity = parseInt(quantityInput.value) || 1;
+        const total = pricePerItem * quantity;
+        totalPriceElem.textContent = total.toFixed(2);
+    }
+
+    quantityInput.addEventListener('input', updateTotalPrice);
+});
+</script>
+
 {% endblock %}

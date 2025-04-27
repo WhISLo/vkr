@@ -1,16 +1,26 @@
-{% extends 'base.html' %}
+<!-- C:\Users\user\Desktop\VKR\details\templates\details\user_orders.html -->
 
-{% block title %}Мои заказы{% endblock %}
+{% extends 'base.html' %}  <!-- Тег extends должен быть первым -->
+
+{% load custom_filters %}
 
 {% block content %}
-<h2>Мои заказы запчастей</h2>
-<ul>
+  <h2>Мои заказы</h2>
+
   {% for order in orders %}
-    <li>
-      {{ order.part.name }} — {{ order.quantity }} шт. — Статус: {{ order.status }}
-    </li>
+    <div>
+      <h4>Заказ №{{ order.id }} от {{ order.order_date|date:"H:i d:m:y" }}</h4>
+
+      {% for item in order.parts.all %}
+        <p>Запчасть: {{ item.name }}</p>
+        <p>Количество: {{ item.orderpart_set.first.quantity }} шт.</p>
+        <p>Цена за штуку: {{ item.price }} руб.</p>
+        <p>Общая сумма: {{ item.price|multiply:item.orderpart_set.first.quantity }} руб.</p>
+      {% endfor %}
+
+      <p>Статус: {{ order.status }}</p>
+    </div>
   {% empty %}
-    <li>У вас нет заказов.</li>
+    <p>У вас нет заказов.</p>
   {% endfor %}
-</ul>
 {% endblock %}
