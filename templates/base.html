@@ -25,6 +25,7 @@
                     <li><a href="{% url 'service_history' %}" class="{% if 'service_history' in request.path %}active{% endif %}">🛠 История обслуживания</a></li>
                     <li><a href="{% url 'user_orders' %}" class="{% if 'user_orders' in request.path %}active{% endif %}">🧾 Мои заказы</a></li>
                     <li><a href="{% url 'marketplace_links' %}" class="{% if 'marketplace_links' in request.path %}active{% endif %}">🛒 Магазин запчастей</a></li>
+                    <li><a href="{% url 'parts_list' %}" class="{% if 'parts' in request.path %}active{% endif %}">🧩 Заказать запчасть</a></li>
                     <li><a href="{% url 'add_part' %}" class="{% if 'add_part' in request.path %}active{% endif %}">➕ Добавить запчасть</a></li>
                     <li><a href="{% url 'logout' %}">🚪 Выход</a></li>
                 </ul>

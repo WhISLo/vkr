@@ -7,12 +7,10 @@
 <ul>
   {% for order in orders %}
     <li>
-      <a href="{% url 'order_detail' order.id %}">
-        {{ order.part.name }} — {{ order.quantity }} шт. — Статус: {{ order.get_status_display }}
-      </a>
+      {{ order.part.name }} — {{ order.quantity }} шт. — Статус: {{ order.status }}
     </li>
   {% empty %}
-    <li>У вас пока нет заказов.</li>
+    <li>У вас нет заказов.</li>
   {% endfor %}
 </ul>
 {% endblock %}

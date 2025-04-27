@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Список запчастей{% endblock %}
+
+{% block content %}
+<h2>Список запчастей</h2>
+
+<!-- Форма поиска -->
+<form method="get" action="{% url 'parts_list' %}">
+    <input type="text" name="q" placeholder="Поиск по названию..." value="{{ query }}">
+    <button type="submit">Поиск</button>
+</form>
+
+<!-- Таблица запчастей -->
+<table>
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Наличие</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for part in parts %}
+            <tr>
+                <td>{{ part.name }}</td>
+                <td>{{ part.description|default:"—" }}</td>
+                <td>{{ part.price }} ₽</td>
+                <td>{{ part.in_stock|yesno:"Да,Нет" }}</td>
+                <td>
+                    {% if part.in_stock %}
+                        <a href="{% url 'add_part_to_order' part.id %}">Заказать</a>
+                    {% else %}
+                        Нет в наличии
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">Запчасти не найдены.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'user_orders' %}">← Мои заказы</a>
+{% endblock %}

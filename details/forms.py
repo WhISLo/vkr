@@ -1,12 +1,8 @@
+# details/forms.py
 from django import forms
-from .models import Part, PartOrderHistory
-
-class PartForm(forms.ModelForm):
-    class Meta:
-        model = Part
-        fields = ['name', 'description', 'price']
+from .models import PartOrderHistory
 
 class PartOrderForm(forms.ModelForm):
     class Meta:
         model = PartOrderHistory
-        fields = ['part', 'quantity']
+        fields = ['quantity']  # Убираем поле 'part'
