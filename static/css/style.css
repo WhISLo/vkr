@@ -147,4 +147,130 @@ input, select, textarea {
     border-left: 4px solid var(--success);
 }
 
+/* Стили для истории обслуживания */
+.service-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    color: #4361ee;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.service-block {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.service-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.service-status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #e9ecef;
+    color: #495057;
+}
+
+.service-status.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.service-status.in_progress {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.service-content {
+    padding: 20px;
+}
+
+.service-parts {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #eee;
+}
+
+.service-parts ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.service-parts li {
+    margin-bottom: 8px;
+}
+
+.service-parts a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: #212529;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.service-parts a:hover {
+    background: #f8f9fa;
+}
+
+.part-price {
+    color: #2b8a3e;
+    font-weight: 500;
+}
+
+.order-details {
+    margin-bottom: 15px;
+}
+
+.details-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #4361ee;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.details-link:hover {
+    text-decoration: underline;
+}
+
+.empty-message {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-message i {
+    margin-right: 8px;
+    color: #adb5bd;
+}
+
 /* Это было норм */
