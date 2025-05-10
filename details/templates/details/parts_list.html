@@ -1,49 +1,65 @@
 {% extends 'base.html' %}
 
-{% block title %}Список запчастей{% endblock %}
+{% block title %}Каталог запчастей{% endblock %}
 
 {% block content %}
-<h2>Список запчастей</h2>
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title"><i class="fas fa-cogs"></i> Каталог запчастей</h1>
+        <form method="get" action="{% url 'details:parts_list' %}" class="search-form">
+            <div class="form-group" style="margin: 0; width: 300px;">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Поиск запчастей..." value="{{ query }}">
+                    <button type="submit" class="btn btn-sm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 
-<!-- Форма поиска -->
-<form method="get" action="{% url 'parts_list' %}">
-    <input type="text" name="q" placeholder="Поиск по названию..." value="{{ query }}">
-    <button type="submit">Поиск</button>
-</form>
-
-<!-- Таблица запчастей -->
-<table>
-    <thead>
-        <tr>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Цена</th>
-            <th>Наличие</th>
-            <th>Действие</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for part in parts %}
-            <tr>
-                <td>{{ part.name }}</td>
-                <td>{{ part.description|default:"—" }}</td>
-                <td>{{ part.price }} ₽</td>
-                <td>{{ part.in_stock|yesno:"Да,Нет" }}</td>
-                <td>
-                    {% if part.in_stock %}
-                        <a href="{% url 'add_part_to_order' part.id %}">Заказать</a>
-                    {% else %}
-                        Нет в наличии
-                    {% endif %}
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="5">Запчасти не найдены.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<a href="{% url 'user_orders' %}">← Мои заказы</a>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Цена</th>
+                    <th>Наличие</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in parts %}
+                <tr>
+                    <td>{{ part.name }}</td>
+                    <td>{{ part.description|default:"—"|truncatechars:50 }}</td>
+                    <td>{{ part.price }} ₽</td>
+                    <td>
+                        <span class="badge {% if part.in_stock %}bg-success{% else %}bg-danger{% endif %}">
+                            {% if part.in_stock %}<i class="fas fa-check"></i> В наличии{% else %}<i class="fas fa-times"></i> Нет в наличии{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{% url 'details:part_detail' part.id %}" class="btn btn-sm">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                            {% if part.in_stock %}
+                            <a href="{% url 'details:add_part_to_order' part.id %}" class="btn btn-sm">
+                                <i class="fas fa-cart-plus"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Запчасти не найдены</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

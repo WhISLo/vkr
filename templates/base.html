@@ -2,40 +2,120 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Автосервис{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 <body>
     <div class="container">
         <aside class="sidebar">
-            <h2>Меню</h2>
+            <h2><i class="fas fa-car"></i> Автосервис</h2>
 
             {% if user.is_authenticated %}
-                <p>👋 Привет, {{ user.username }}!</p>
+                <p class="user-greeting"><i class="fas fa-user"></i> {{ user.username }}</p>
             {% else %}
-                <p>👋 Привет, гость!</p>
+                <p class="user-greeting"><i class="fas fa-user"></i> Гость</p>
             {% endif %}
 
             <nav>
                 <ul>
-                    <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">🏠 Главная</a></li>
-                    <li><a href="{% url 'profile' %}" class="{% if 'profile' in request.path %}active{% endif %}">👤 Профиль</a></li>
-                    <li><a href="{% url 'parts_history' %}" class="{% if 'parts_history' in request.path %}active{% endif %}">📦 История запчастей</a></li>
-                    <li><a href="{% url 'service_history' %}" class="{% if 'service_history' in request.path %}active{% endif %}">🛠 История обслуживания</a></li>
-                    <li><a href="{% url 'user_orders' %}" class="{% if 'user_orders' in request.path %}active{% endif %}">🧾 Мои заказы</a></li>
-                    <li><a href="{% url 'marketplace_links' %}" class="{% if 'marketplace_links' in request.path %}active{% endif %}">🛒 Магазин запчастей</a></li>
-                    <li><a href="{% url 'parts_list' %}" class="{% if 'parts' in request.path %}active{% endif %}">🧩 Заказать запчасть</a></li>
-                    <li><a href="{% url 'add_part' %}" class="{% if 'add_part' in request.path %}active{% endif %}">➕ Добавить запчасть</a></li>
-                    <li><a href="{% url 'logout' %}">🚪 Выход</a></li>
+                    <!-- Главная -->
+                    <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+                        <i class="fas fa-home"></i> Главная
+                    </a></li>
+
+                    <!-- Профиль -->
+                    {% url 'profile' as profile_url %}
+                    {% if profile_url %}
+                    <li><a href="{{ profile_url }}" class="{% if 'profile' in request.path %}active{% endif %}">
+                        <i class="fas fa-user-circle"></i> Профиль
+                    </a></li>
+                    {% endif %}
+
+                    <!-- История запчастей -->
+                    {% url 'history:parts_history' as parts_history_url %}
+                    {% if parts_history_url %}
+                    <li><a href="{{ parts_history_url }}" class="{% if 'parts_history' in request.path %}active{% endif %}">
+                        <i class="fas fa-box-open"></i> Запчасти
+                    </a></li>
+                    {% endif %}
+
+                    <!-- История обслуживания -->
+                    {% url 'history:service_history' as service_history_url %}
+                    {% if service_history_url %}
+                    <li><a href="{{ service_history_url }}" class="{% if 'service_history' in request.path %}active{% endif %}">
+                        <i class="fas fa-tools"></i> Обслуживание
+                    </a></li>
+                    {% endif %}
+
+                    <!-- Заказы -->
+                    {% url 'details:user_orders' as user_orders_url %}
+                    {% if user_orders_url %}
+                    <li><a href="{{ user_orders_url }}" class="{% if 'user_orders' in request.path %}active{% endif %}">
+                        <i class="fas fa-receipt"></i> Заказы
+                    </a></li>
+                    {% endif %}
+
+                    <!-- Магазины -->
+                    {% url 'external_parts:marketplace_links' as marketplace_links_url %}
+                    {% if marketplace_links_url %}
+                    <li><a href="{{ marketplace_links_url }}" class="{% if 'marketplace' in request.path %}active{% endif %}">
+                        <i class="fas fa-store"></i> Магазины
+                    </a></li>
+                    {% endif %}
+
+                    <!-- Заказать запчасти -->
+                    {% url 'details:parts_list' as parts_list_url %}
+                    {% if parts_list_url %}
+                    <li><a href="{{ parts_list_url }}" class="{% if 'parts' in request.path %}active{% endif %}">
+                        <i class="fas fa-shopping-cart"></i> Заказать
+                    </a></li>
+                    {% endif %}
+
+                    <!-- Добавить запчасть (только для staff) -->
+                    {% if user.is_staff %}
+                        {% url 'details:add_part' as add_part_url %}
+                        {% if add_part_url %}
+                        <li><a href="{{ add_part_url }}" class="{% if 'add_part' in request.path %}active{% endif %}">
+                            <i class="fas fa-plus-circle"></i> Добавить
+                        </a></li>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- Выход -->
+                    {% url 'logout' as logout_url %}
+                    {% if logout_url %}
+                    <li><a href="{{ logout_url }}">
+                        <i class="fas fa-sign-out-alt"></i> Выход
+                    </a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </aside>
 
         <main class="main-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             {% block content %}
             {% endblock %}
         </main>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal')">&times;</span>
+            <div id="modal-body"></div>
+        </div>
     </div>
 </body>
 </html>
