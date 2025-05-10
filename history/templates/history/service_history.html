@@ -1,13 +1,66 @@
 {% extends 'base.html' %}
-{% block title %}История обслуживания{% endblock %}
-{% block content %}
-<h2>История обслуживания автомобиля</h2>
-{% for order in part_orders %}
-  <div>
-    <p>Название запчасти: {{ order.part.name }}</p>
-    <p>Дата заказа: {{ order.ordered_at }}</p>
-    <a href="{% url 'order_detail' order.id %}">Перейти к заказу</a>
-  </div>
-{% endfor %}
 
+{% block title %}История обслуживания{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title"><i class="fas fa-history"></i> История обслуживания</h2>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'diagnostics')">Диагностика</button>
+        <button class="tab-btn" onclick="openTab(event, 'parts')">Запчасти</button>
+    </div>
+
+    <div id="diagnostics" class="tab-content" style="display: block;">
+        <h3><i class="fas fa-file-medical"></i> Диагностические отчеты</h3>
+        {% for diag in diagnostics %}
+            <div class="diagnostic-block">
+                <p><strong>Дата:</strong> {{ diag.created_at|date:"d.m.Y H:i" }}</p>
+                <p><strong>Описание:</strong> {{ diag.description }}</p>
+                <p><strong>Рекомендации:</strong> {{ diag.recommendations }}</p>
+                <p><strong>Необходимые запчасти:</strong></p>
+                <ul>
+                    {% for part in diag.required_parts.all %}
+                        <li><a href="{% url 'details:part_detail' part.id %}">{{ part.name }}</a></li>
+                    {% empty %}
+                        <li>Нет запчастей</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% empty %}
+            <p>Нет диагностических отчетов</p>
+        {% endfor %}
+    </div>
+
+    <div id="parts" class="tab-content">
+        <h3><i class="fas fa-cogs"></i> Заказанные запчасти</h3>
+        {% for order in part_orders %}
+            <div class="order-block">
+                <p><strong>Запчасть:</strong> {{ order.part.name }}</p>
+                <p><strong>Дата заказа:</strong> {{ order.order_date|date:"d.m.Y H:i" }}</p>
+                <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+                <a href="{% url 'details:order_detail' order.id %}">Подробнее</a>
+            </div>
+        {% empty %}
+            <p>Нет заказов запчастей</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function openTab(evt, tabName) {
+    const tabContents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none";
+    }
+
+    const tabButtons = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+</script>
 {% endblock %}

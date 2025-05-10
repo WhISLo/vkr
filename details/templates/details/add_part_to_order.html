@@ -9,5 +9,5 @@
     {{ form.as_p }}
     <button type="submit">Добавить в заказ</button>
 </form>
-<a href="{% url 'user_orders' %}">← Назад к моим заказам</a>
+<a href="{% url 'details:user_orders' %}">← Назад к моим заказам</a>
 {% endblock %}
