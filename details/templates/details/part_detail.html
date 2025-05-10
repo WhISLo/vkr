@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ part.name }}</h2>
+<p><strong>Описание:</strong> {{ part.description }}</p>
+<p><strong>Цена:</strong> {{ part.price }}</p>
+<p><strong>Наличие:</strong> {% if part.in_stock %}В наличии{% else %}Нет в наличии{% endif %}</p>
+
+<a href="{% url 'details:add_part_to_order' part.id %}" class="btn btn-primary">Добавить в заказ</a>
+<a href="{% url 'details:parts_list' %}" class="btn btn-secondary">Назад к списку</a>
+{% endblock %}

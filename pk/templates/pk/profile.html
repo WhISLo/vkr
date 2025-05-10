@@ -10,7 +10,7 @@
         <p><strong>Необходимые запчасти:</strong>
             <ul>
                 {% for part in diag.required_parts.all %}
-                    <li><a href="{% url 'part_detail' part.id %}">{{ part.name }}</a></li>
+                    <li><a href="{% url 'details:part_detail' part.id %}">{{ part.name }}</a></li>
                 {% endfor %}
             </ul>
         </p>

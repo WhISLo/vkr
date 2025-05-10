@@ -36,6 +36,9 @@ def profile_view(request):
     # Получаем последние 50 диагностических отчетов
     diagnostics = DiagnosticReport.objects.filter(user=user).order_by('-created_at')[:50]
 
+
+
+##ТУТ БАГ
     return render(request, 'pk/profile.html', {
         'part_order_history': part_order_history,
         'diagnostics': diagnostics,

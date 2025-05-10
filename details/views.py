@@ -3,6 +3,8 @@ from .models import Part, PartOrderHistory
 from .forms import PartOrderForm, PartOrderForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+app_name = 'details'
+
 # Проверка роли менеджера
 def is_manager(user):
     return user.groups.filter(name='Manager').exists() or user.is_superuser
@@ -62,3 +64,8 @@ def parts_list_view(request):
     else:
         parts = Part.objects.all()
     return render(request, 'details/parts_list.html', {'parts': parts, 'query': query})
+
+# details/views.py
+def part_detail_view(request, pk):
+    part = get_object_or_404(Part, pk=pk)
+    return render(request, 'details/part_detail.html', {'part': part})
