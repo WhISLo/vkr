@@ -2,7 +2,7 @@
 from django.urls import path
 from . import views
 
-app_name = 'details'  # Добавьте это
+app_name = 'details'
 
 urlpatterns = [
     path('info/', views.detail_info_view, name='detail_info'),

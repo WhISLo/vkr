@@ -1,33 +1,147 @@
-<p>Вы вошли как: <strong>{{ request.user.email }}</strong></p>
-<!-- pk/templates/pk/profile.html -->
+{% extends 'base.html' %}
 
-<h3>Последние диагностические отчёты</h3>
-{% for diag in diagnostics %}
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+    <h2><i class="fas fa-user-circle"></i> Профиль пользователя</h2>
+    <p class="user-email"><i class="fas fa-envelope"></i> {{ request.user.email }}</p>
+</div>
+
+<div class="card">
+    <h3><i class="fas fa-file-medical"></i> Последние диагностические отчёты</h3>
+    
+    {% for diag in diagnostics %}
     <div class="diagnostic-block">
-        <p><strong>Дата:</strong> {{ diag.created_at }}</p>
-        <p><strong>Описание:</strong> {{ diag.description }}</p>
-        <p><strong>Рекомендации:</strong> {{ diag.recommendations }}</p>
-        <p><strong>Необходимые запчасти:</strong>
-            <ul>
-                {% for part in diag.required_parts.all %}
-                    <li><a href="{% url 'details:part_detail' part.id %}">{{ part.name }}</a></li>
-                {% endfor %}
-            </ul>
-        </p>
+        <div class="diagnostic-header">
+            <span class="diagnostic-date"><i class="far fa-calendar-alt"></i> {{ diag.created_at|date:"d.m.Y H:i" }}</span>
+        </div>
+        <div class="diagnostic-content">
+            <p><strong><i class="fas fa-align-left"></i> Описание:</strong> {{ diag.description }}</p>
+            <p><strong><i class="fas fa-clipboard-check"></i> Рекомендации:</strong> {{ diag.recommendations }}</p>
+            
+            <div class="required-parts">
+                <p><strong><i class="fas fa-cogs"></i> Необходимые запчасти:</strong></p>
+                <ul>
+                    {% for part in diag.required_parts.all %}
+                    <li>
+                        <a href="{% url 'details:part_detail' part.id %}">
+                            <i class="fas fa-cog"></i> {{ part.name }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li>Нет необходимых запчастей</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
-{% endfor %}
+    {% empty %}
+    <p>Нет диагностических отчётов</p>
+    {% endfor %}
+</div>
 
-<h3>История заказов запчастей</h3>
-{% for order in part_order_history %}
-    <div class="part-order-block">
-        <p><strong>Запчасть:</strong> {{ order.part.name }}</p>
-        <p><strong>Количество:</strong> {{ order.quantity }}</p>
-        <p><strong>Статус:</strong> {{ order.status }}</p>
-        <p><strong>Дата заказа:</strong> {{ order.order_date }}</p>
+<div class="card">
+    <h3><i class="fas fa-history"></i> История заказов запчастей</h3>
+    
+    <div class="orders-grid">
+        {% for order in part_order_history %}
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-date"><i class="far fa-calendar-alt"></i> {{ order.order_date|date:"d.m.Y" }}</span>
+                <span class="order-status badge-{{ order.status|lower }}">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+            <div class="order-body">
+                <p><i class="fas fa-cog"></i> <strong>Запчасть:</strong> {{ order.part.name }}</p>
+                <p><i class="fas fa-hashtag"></i> <strong>Количество:</strong> {{ order.quantity }}</p>
+            </div>
+            <div class="order-footer">
+                <a href="{% url 'details:order_detail' order.id %}" class="btn btn-sm">
+                    <i class="fas fa-info-circle"></i> Подробнее
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет истории заказов</p>
+        {% endfor %}
     </div>
-{% endfor %}
+</div>
 
-<form method="post" action="{% url 'logout' %}">
-  {% csrf_token %}
-  <button type="submit">Выйти</button>
-</form>
+<div class="text-center mt-3">
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Выйти
+        </button>
+    </form>
+</div>
+
+<style>
+.profile-header {
+    margin-bottom: 2rem;
+}
+
+.user-email {
+    color: #666;
+}
+
+.diagnostic-block {
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #4361ee;
+}
+
+.diagnostic-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.diagnostic-date {
+    color: #666;
+}
+
+.required-parts ul {
+    padding-left: 1.5rem;
+}
+
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.order-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.order-date {
+    color: #666;
+}
+
+.badge-ordered {
+    background-color: #ffc107;
+    color: #000;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+
+.badge-received {
+    background-color: #28a745;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+</style>
+{% endblock %}

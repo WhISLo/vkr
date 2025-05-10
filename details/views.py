@@ -5,20 +5,25 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 app_name = 'details'
 
+
 # Проверка роли менеджера
 def is_manager(user):
     return user.groups.filter(name='Manager').exists() or user.is_superuser
 
+
 def detail_info_view(request):
     return render(request, 'details/detail_info.html')
+
 
 @login_required
 def order_detail_view(request, order_id):
     order = get_object_or_404(PartOrderHistory, id=order_id, user=request.user)
     return render(request, 'details/order_detail.html', {'order': order})
 
+
 def diagnostic_result_view(request):
     return render(request, 'details/diagnostic_result.html')
+
 
 # Добавление новой запчасти только для менеджеров
 @user_passes_test(is_manager)
@@ -41,6 +46,7 @@ def user_orders_view(request):
     # Передаем заказы в шаблон
     return render(request, 'details/user_orders.html', {'orders': orders})
 
+
 # Добавить запчасть в заказ пользователем
 @login_required
 def add_part_to_order_view(request, part_id):
@@ -56,6 +62,8 @@ def add_part_to_order_view(request, part_id):
     else:
         form = PartOrderForm()
     return render(request, 'details/add_part_to_order.html', {'form': form, 'part': part})
+
+
 @login_required
 def parts_list_view(request):
     query = request.GET.get('q', '')  # Теперь если пусто — ''
@@ -64,6 +72,7 @@ def parts_list_view(request):
     else:
         parts = Part.objects.all()
     return render(request, 'details/parts_list.html', {'parts': parts, 'query': query})
+
 
 # details/views.py
 def part_detail_view(request, pk):
