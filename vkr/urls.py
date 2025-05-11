@@ -31,4 +31,5 @@ urlpatterns = [
     path('diagnostics/', include('diagnostics.urls')),  # Подключаем маршруты диагностических отчетов
     path('details/', include('details.urls', namespace='details')),
     path('parts/<int:pk>/', details.views.part_detail_view, name='part_detail'),
+    path('garage/', include('vehicles.urls', namespace='vehicles')),
 ]

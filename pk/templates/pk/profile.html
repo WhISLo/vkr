@@ -1,147 +1,126 @@
 {% extends 'base.html' %}
 
-{% block title %}Профиль пользователя{% endblock %}
-
 {% block content %}
-<div class="profile-header">
-    <h2><i class="fas fa-user-circle"></i> Профиль пользователя</h2>
-    <p class="user-email"><i class="fas fa-envelope"></i> {{ request.user.email }}</p>
-</div>
-
-<div class="card">
-    <h3><i class="fas fa-file-medical"></i> Последние диагностические отчёты</h3>
-    
-    {% for diag in diagnostics %}
-    <div class="diagnostic-block">
-        <div class="diagnostic-header">
-            <span class="diagnostic-date"><i class="far fa-calendar-alt"></i> {{ diag.created_at|date:"d.m.Y H:i" }}</span>
+<div class="profile-container">
+    <!-- Шапка профиля -->
+    <div class="profile-header">
+        <h1><i class="fas fa-user-circle"></i> {{ user.get_full_name|default:user.username }}</h1>
+        <div class="profile-bonus">
+            <i class="fas fa-coins"></i> {{ user.bonus_points|default:"0" }} бонусных баллов
         </div>
-        <div class="diagnostic-content">
-            <p><strong><i class="fas fa-align-left"></i> Описание:</strong> {{ diag.description }}</p>
-            <p><strong><i class="fas fa-clipboard-check"></i> Рекомендации:</strong> {{ diag.recommendations }}</p>
-            
-            <div class="required-parts">
-                <p><strong><i class="fas fa-cogs"></i> Необходимые запчасти:</strong></p>
-                <ul>
-                    {% for part in diag.required_parts.all %}
-                    <li>
-                        <a href="{% url 'details:part_detail' part.id %}">
-                            <i class="fas fa-cog"></i> {{ part.name }}
+    </div>
+
+    <!-- Гараж пользователя -->
+    <div class="profile-section">
+        <h2><i class="fas fa-car"></i> Гараж</h2>
+        {% if user_vehicles %}
+            <div class="vehicle-card">
+                <div class="vehicle-header">
+                    <h3>{{ user_vehicles.0.model }} ({{ user_vehicles.0.year }})</h3>
+                    <span class="vehicle-plate">{{ user_vehicles.0.license_plate }}</span>
+                </div>
+
+                <div class="vehicle-details">
+                    <div class="detail-row">
+                        <span>VIN:</span>
+                        <strong>{{ user_vehicles.0.vin }}</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Пробег:</span>
+                        <strong>{{ user_vehicles.0.mileage }} км</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Последнее ТО:</span>
+                        <strong>{{ user_vehicles.0.last_service|date:"d.m.Y" }}</strong>
+                    </div>
+                </div>
+
+                <div class="vehicle-actions">
+                    <a href="{% url 'vehicle_history' user_vehicles.0.id %}" class="btn btn-primary">
+                        <i class="fas fa-history"></i> История обслуживания
+                    </a>
+                    <a href="{% url 'vehicle_estimate' user_vehicles.0.id %}" class="btn btn-secondary">
+                        <i class="fas fa-ruble-sign"></i> Оценить стоимость
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-garage">
+                <p>У вас нет добавленных автомобилей</p>
+                <a href="{% url 'vehicles:add_vehicle' %}" class="btn btn-primary">
+    <i class="fas fa-plus"></i> Добавить автомобиль
+</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Активные заказы -->
+    <div class="profile-section">
+        <h2><i class="fas fa-clipboard-list"></i> Текущие заказы</h2>
+        {% if active_orders %}
+            <div class="orders-grid">
+                {% for order in active_orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-date">{{ order.created_at|date:"d.m.Y" }}</span>
+                        <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
+                    </div>
+                    <div class="order-body">
+                        <p><i class="fas fa-car"></i> {{ order.vehicle.model }}</p>
+                        <p><i class="fas fa-tools"></i> {{ order.service_type }}</p>
+                        <p><i class="fas fa-ruble-sign"></i> {{ order.total_price }} ₽</p>
+                    </div>
+                    <div class="order-footer">
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm">
+                            <i class="fas fa-info-circle"></i> Подробнее
                         </a>
-                    </li>
-                    {% empty %}
-                    <li>Нет необходимых запчастей</li>
-                    {% endfor %}
-                </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-orders">Нет активных заказов</p>
+        {% endif %}
+    </div>
+
+    <!-- Уведомления и настройки -->
+    <div class="profile-section">
+        <h2><i class="fas fa-bell"></i> Уведомления</h2>
+        <div class="notifications-settings">
+            <div class="notification-item">
+                <div class="notification-text">
+                    <h4>Специальные предложения</h4>
+                    <p>Получать уведомления об акциях и скидках</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" {% if user.notify_offers %}checked{% endif %}>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="notification-item">
+                <div class="notification-text">
+                    <h4>Статус заказа</h4>
+                    <p>Уведомлять об изменении статуса заказа</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" {% if user.notify_orders %}checked{% endif %}>
+                    <span class="slider round"></span>
+                </label>
             </div>
         </div>
     </div>
-    {% empty %}
-    <p>Нет диагностических отчётов</p>
-    {% endfor %}
+
+    <!-- Быстрые действия -->
+    <div class="quick-actions">
+    <a href="#" class="quick-action" onclick="alert('Раздел в разработке')">
+        <i class="fas fa-plus-circle"></i> Новый заказ
+    </a>
+    <a href="#" class="quick-action" onclick="alert('Раздел в разработке')">
+        <i class="fas fa-history"></i> История обслуживания
+    </a>
+    <a href="{% url 'logout' %}" class="quick-action logout">
+        <i class="fas fa-sign-out-alt"></i> Выйти
+    </a>
 </div>
-
-<div class="card">
-    <h3><i class="fas fa-history"></i> История заказов запчастей</h3>
-    
-    <div class="orders-grid">
-        {% for order in part_order_history %}
-        <div class="order-card">
-            <div class="order-header">
-                <span class="order-date"><i class="far fa-calendar-alt"></i> {{ order.order_date|date:"d.m.Y" }}</span>
-                <span class="order-status badge-{{ order.status|lower }}">
-                    {{ order.get_status_display }}
-                </span>
-            </div>
-            <div class="order-body">
-                <p><i class="fas fa-cog"></i> <strong>Запчасть:</strong> {{ order.part.name }}</p>
-                <p><i class="fas fa-hashtag"></i> <strong>Количество:</strong> {{ order.quantity }}</p>
-            </div>
-            <div class="order-footer">
-                <a href="{% url 'details:order_detail' order.id %}" class="btn btn-sm">
-                    <i class="fas fa-info-circle"></i> Подробнее
-                </a>
-            </div>
-        </div>
-        {% empty %}
-        <p>Нет истории заказов</p>
-        {% endfor %}
-    </div>
 </div>
-
-<div class="text-center mt-3">
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">
-            <i class="fas fa-sign-out-alt"></i> Выйти
-        </button>
-    </form>
-</div>
-
-<style>
-.profile-header {
-    margin-bottom: 2rem;
-}
-
-.user-email {
-    color: #666;
-}
-
-.diagnostic-block {
-    margin-bottom: 1.5rem;
-    border-left: 4px solid #4361ee;
-}
-
-.diagnostic-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-}
-
-.diagnostic-date {
-    color: #666;
-}
-
-.required-parts ul {
-    padding-left: 1.5rem;
-}
-
-.orders-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-}
-
-.order-card {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 1rem;
-}
-
-.order-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-}
-
-.order-date {
-    color: #666;
-}
-
-.badge-ordered {
-    background-color: #ffc107;
-    color: #000;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-}
-
-.badge-received {
-    background-color: #28a745;
-    color: white;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-}
-</style>
 {% endblock %}

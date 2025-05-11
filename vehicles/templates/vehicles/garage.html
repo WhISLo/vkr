@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2><i class="fas fa-car"></i> Мой гараж</h2>
+    
+    <div class="vehicle-grid">
+        {% for vehicle in vehicles %}
+        <div class="vehicle-card">
+            <div class="vehicle-header">
+                <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+                <span class="vehicle-year">{{ vehicle.year }} год</span>
+            </div>
+            
+            <div class="vehicle-details">
+                <p><i class="fas fa-car-alt"></i> {{ vehicle.license_plate }}</p>
+                <p><i class="fas fa-road"></i> {{ vehicle.mileage }} км</p>
+                {% if vehicle.estimated_price %}
+                <p class="price-estimate">
+                    <i class="fas fa-tag"></i> ~{{ vehicle.estimated_price }} ₽
+                </p>
+                {% endif %}
+            </div>
+            
+            <div class="vehicle-actions">
+                <a href="{% url 'vehicles:estimate_price' vehicle.pk %}" class="btn btn-sm">
+                    <i class="fas fa-ruble-sign"></i> Оценить
+                </a>
+                <a href="{% url 'vehicles:service_history' vehicle.pk %}" class="btn btn-sm">
+                    <i class="fas fa-history"></i> История
+                </a>
+            </div>
+        </div>
+        <div class="similar-link">
+    <a href="{% url 'vehicles:similar_vehicles' vehicle.pk %}" class="btn btn-sm btn-outline-primary">
+        <i class="fas fa-car-side"></i> Похожие автомобили
+    </a>
+</div>
+        {% empty %}
+        <div class="empty-garage">
+            <p>У вас пока нет добавленных автомобилей</p>
+            <a href="{% url 'vehicles:add_vehicle' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Добавить автомобиль
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if vehicles %}
+    <div class="text-center mt-4">
+        <a href="{% url 'vehicles:add_vehicle' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить ещё один автомобиль
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

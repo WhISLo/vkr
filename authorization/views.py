@@ -32,10 +32,20 @@ def logout_view(request):
 Lada
 wedfghj234576543asdfvb
 '''
+
+
 '''
 0909009
 0909009@mail.ru
 0909009
 VAZ
 wedf13457sadadasdasd43asdfvb
+'''
+
+'''
+1111
+1111@mail.ru
+123134235
+Lada priora
+ftvbnmlkooiguvgbnpnk
 '''

@@ -1,0 +1,20 @@
+<div class="similar-vehicles-grid">
+    {% for similar in similar_vehicles %}
+    <div class="similar-card">
+        <div class="similar-header">
+            <h4>{{ similar.make }} {{ similar.model }}</h4>
+            <span class="year-badge">{{ similar.year }} год</span>
+        </div>
+        <div class="similar-details">
+            <p><i class="fas fa-road"></i> {{ similar.mileage }} км</p>
+            {% if similar.estimated_price %}
+            <p class="price"><i class="fas fa-tag"></i> {{ similar.estimated_price }} ₽</p>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">
+        Нет информации о похожих автомобилях
+    </div>
+    {% endfor %}
+</div>

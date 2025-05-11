@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>
+        <i class="fas fa-car"></i> Автомобили, похожие на ваш 
+        {{ user_vehicle.make }} {{ user_vehicle.model }} ({{ user_vehicle.year }})
+    </h2>
+    
+    <div class="similar-vehicles">
+        {% for vehicle in similar_vehicles %}
+        <div class="similar-card">
+            <div class="similar-header">
+                <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+                <span class="similar-year">{{ vehicle.year }} год</span>
+            </div>
+            
+            <div class="similar-details">
+                <p><i class="fas fa-road"></i> {{ vehicle.mileage }} км</p>
+                {% if vehicle.estimated_price %}
+                <p class="price-estimate">
+                    <i class="fas fa-tag"></i> ~{{ vehicle.estimated_price }} ₽
+                </p>
+                {% endif %}
+            </div>
+            
+            <div class="similar-actions">
+                <a href="#" class="btn btn-sm" 
+                   onclick="alert('Это демо-версия. В реальном приложении здесь будет детальная информация')">
+                    <i class="fas fa-info-circle"></i> Подробнее
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            Пока нет похожих автомобилей в нашей базе
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'vehicles:garage' %}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Вернуться в гараж
+        </a>
+    </div>
+</div>
+{% endblock %}

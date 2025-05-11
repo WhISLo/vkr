@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>
+        <i class="fas fa-tag"></i> Оценка стоимости: 
+        {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
+    </h2>
+    
+    <div class="vehicle-details">
+        <p><i class="fas fa-car-alt"></i> Госномер: {{ vehicle.license_plate }}</p>
+        <p><i class="fas fa-road"></i> Пробег: {{ vehicle.mileage }} км</p>
+    </div>
+
+    <div class="price-estimate">
+        {% if estimated_price %}
+            <div class="alert alert-success">
+                <h4><i class="fas fa-check-circle"></i> Оценка стоимости:</h4>
+                <p class="price">{{ estimated_price }} ₽</p>
+                <p>Средняя рыночная цена для данного автомобиля</p>
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                <h4><i class="fas fa-exclamation-triangle"></i> Не удалось оценить</h4>
+                <p>Не получилось определить рыночную стоимость. Попробуйте позже.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="similar-vehicles mt-4">
+        <h3><i class="fas fa-car-side"></i> Похожие автомобили</h3>
+        {% include 'vehicles/similar_vehicles.html' %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'vehicles:garage' %}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Вернуться в гараж
+        </a>
+    </div>
+</div>
+{% endblock %}
