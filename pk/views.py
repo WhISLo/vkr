@@ -78,3 +78,23 @@ def send_report(request, report_id):
     )
 
     return HttpResponse("Отчёт успешно отправлен!")
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        # Отправка email (настройте в settings.py)
+        send_mail(
+            f'Сообщение от {name}',
+            message,
+            email,
+            ['your@email.com'],  # Ваш email
+            fail_silently=False,
+        )
+        messages.success(request, 'Ваше сообщение отправлено!')
+        return redirect('home')
+
+    return render(request, 'contact.html')

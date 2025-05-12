@@ -2,13 +2,413 @@
 {% load static %}
 
 {% block title %}Главная{% endblock %}
-{% block content %}
-<h2>Добро пожаловать в веб-приложение Автосервис</h2>
-<p>Вы можете:</p>
-<ul>
-    <li><a href="{% url 'login' %}">Войти</a></li>
-    <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
-    <li><a href="{% url 'profile' %}">Перейти в личный кабинет</a> (если авторизованы)</li>
-</ul>
-{% endblock %}
 
+{% block content %}
+<style>
+    /* Общие стили с вашей цветовой схемой */
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --warning: #f72585;
+        --danger: #ef233c;
+    }
+
+    .services {
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background-color: var(--primary);
+    }
+
+    .welcome-section h2 {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .welcome-section p {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background-color: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .action-btn:hover {
+        background-color: var(--secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .action-btn.secondary {
+        background-color: #6c757d;
+    }
+
+    .action-btn.secondary:hover {
+        background-color: #5a6268;
+    }
+
+    /* Гарантии */
+    .guarantees-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .guarantee-card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .guarantee-icon {
+        font-size: 2rem;
+        color: var(--primary);
+    }
+
+    /* Services Section */
+    .services {
+        margin-bottom: 40px;
+    }
+
+    .services h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--dark);
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .service-card {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .service-card i {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 15px;
+    }
+
+    .service-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--dark);
+    }
+
+    .service-card p {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    /* Контактная форма и карта */
+    .contact-map-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+        .contact-map-section {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .contact-form {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .contact-form h3 {
+        margin-bottom: 20px;
+        color: var(--dark);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+    }
+
+    .map-container {
+        height: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Контакты */
+    .contacts-section {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 40px;
+    }
+
+    .contacts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .contact-icon {
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .welcome-section {
+            padding: 20px;
+        }
+
+        .welcome-section h2 {
+            font-size: 1.6rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-btn {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Welcome Section -->
+<section class="welcome-section">
+    <h2><i class="fas fa-car"></i> Добро пожаловать в Автосервис</h2>
+    <p>Ваш надежный партнер для всех автомобильных нужд! Мы гарантируем самую низкую цену и 6 месяцев гарантии на все услуги.</p>
+    <div class="action-buttons">
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="action-btn"><i class="fas fa-user-circle"></i> Личный кабинет</a>
+            <a href="{% url 'history:service_history' %}" class="action-btn secondary"><i class="fas fa-history"></i> История обслуживания</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="action-btn"><i class="fas fa-sign-in-alt"></i> Войти</a>
+            <a href="{% url 'register' %}" class="action-btn secondary"><i class="fas fa-user-plus"></i> Зарегистрироваться</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Гарантии -->
+<div class="guarantees-section">
+    <div class="guarantee-card">
+        <i class="fas fa-tag guarantee-icon"></i>
+        <div>
+            <h3>Самая низкая цена</h3>
+            <p>Гарантируем лучшую цену на рынке</p>
+        </div>
+    </div>
+    <div class="guarantee-card">
+        <i class="fas fa-shield-alt guarantee-icon"></i>
+        <div>
+            <h3>Гарантия 6 месяцев</h3>
+            <p>На все виды работ и запчасти</p>
+        </div>
+    </div>
+    <div class="guarantee-card">
+        <i class="fas fa-star guarantee-icon"></i>
+        <div>
+            <h3>Высокое качество</h3>
+            <p>Работаем только с проверенными поставщиками</p>
+        </div>
+    </div>
+</div>
+
+<!-- Services Section -->
+<section class="services">
+    <h2><i class="fas fa-tools"></i> Наши услуги</h2>
+    <div class="services-grid">
+        <div class="service-card">
+            <i class="fas fa-car"></i>
+            <h3>Оценка автомобиля</h3>
+            <p>Точная оценка состояния вашего авто для любых целей.</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-oil-can"></i>
+            <h3>Базовое техобслуживание</h3>
+            <p>Абонемент на замену масла, фильтров и диагностику.</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-paint-roller"></i>
+            <h3>Детейлинг</h3>
+            <p>Профессиональная чистка и защита кузова и салона.</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-tachometer-alt"></i>
+            <h3>Проверка тюнинга</h3>
+            <p>Диагностика тюнингованных авто для безопасности.</p>
+        </div>
+        <div class="service-card">
+            <i class="fas fa-file-alt"></i>
+            <h3>Подготовка документов</h3>
+            <p>Оформление документов для регистрации авто.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Контактная форма и карта -->
+<div class="contact-map-section">
+    <div class="contact-form">
+        <h3><i class="fas fa-envelope"></i> Обратная связь</h3>
+        <form method="post" action="{% url 'contact' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control" name="name" placeholder="Ваше имя" required>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" name="email" placeholder="Ваш email" required>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="message" placeholder="Ваше сообщение" required></textarea>
+            </div>
+            <button type="submit" class="action-btn">Отправить сообщение</button>
+        </form>
+    </div>
+    <div class="map-container">
+    <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2243.772373250716!2d49.106414!3d55.796127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x415ead1a6095e3cd%3A0x854c4a82a99af834!2z0JrQsNC30LDQvdGMLCDQoNC10YHQvy4g0KLQsNGC0LDRgNGB0YLQsNC9!5e0!3m2!1sru!2sru!4v1620000000000!5m2!1sru!2sru"
+        allowfullscreen=""
+        loading="lazy">
+    </iframe>
+</div>
+</div>
+
+<!-- Контакты -->
+<div class="contacts-section">
+    <h2><i class="fas fa-address-book"></i> Контакты</h2>
+    <div class="contacts-grid">
+        <div class="contact-item">
+            <i class="fas fa-map-marker-alt contact-icon"></i>
+            <div>
+                <h3>Адрес</h3>
+                <p>г. Казань, ул. Автосервисная, 123</p>
+            </div>
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-phone contact-icon"></i>
+            <div>
+                <h3>Телефон</h3>
+                <p>+7 (044) 123-45-67</p>
+            </div>
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-envelope contact-icon"></i>
+            <div>
+                <h3>Email</h3>
+                <p>info@autoservice.com</p>
+            </div>
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-clock contact-icon"></i>
+            <div>
+                <h3>Часы работы</h3>
+                <p>Пн-Пт: 9:00 - 19:00<br>Сб: 10:00 - 16:00</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

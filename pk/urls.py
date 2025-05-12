@@ -21,5 +21,5 @@ urlpatterns = [
     # Страница профиля приёмщика (менеджера)
     path('manager/profile/', views.manager_dashboard, name='manager_profile'),
     # изменил на 'manager_profile' для различия
-
+    path('contact/', views.contact_view, name='contact'),
 ]
